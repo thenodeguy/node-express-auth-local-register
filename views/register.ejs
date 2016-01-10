@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+<div class="container">
+<% include partials/navbar %>
+<h1>Register</h1>
+
+<% if(message.length > 0) { %>
+  <p class="server-message"><%= message %></p>
+<% } %>
+
+<form method="post" action="/register">
+  First name: <input type="text" name="firstName">
+  Last name: <input type="text" name="lastName">
+  Email address: <input type="text" name="username">
+  Password: <input type="password" name="password">
+  <input type="submit" value="Register">
+</form>
+
+</div>
+</body>
+</html>

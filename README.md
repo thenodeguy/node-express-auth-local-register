@@ -1,14 +1,7 @@
 # node-express-auth-local
-A basic and lean recipe for implementing username/password authentication in a 
-node express server.
+A basic and lean recipe for implementing user registration in a node express server.
 
-Includes a setup script which will create the 'local/users' table and insert a
-single default user:
-
-Username: admin  
-Password: admin
-
-These credentials should be used to test the username/authentication.
+Includes a setup script which will create the 'local/users' table.
 
 Requirements
 -
