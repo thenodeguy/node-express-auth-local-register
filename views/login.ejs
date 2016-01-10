@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+<div class="container">
+<% include partials/navbar %>
+<h1>Login</h1>
+
+<% if(message.length > 0) { %>
+  <p class="server-message"><%= message %></p>
+<% } %>
+
+<form method="post" action="/login">
+  <input type="text" name="username">
+  <input type="password" name="password">
+  <input type="submit" value="Login">
+</form>
+
+</div>
+</body>
+</html>

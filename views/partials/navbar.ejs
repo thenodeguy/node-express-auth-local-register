@@ -1,0 +1,12 @@
+<% if(isLoggedIn) { %>
+<div>
+  <a href="/">Home</a>
+  <a href="/dashboard">Dashboard</a>
+  <a href="/logout">Logout</a>
+</div>
+<% } else { %>
+<div>
+  <a href="/">Home</a>
+  <a href="/login">Login</a>
+</div>
+<% } %>
