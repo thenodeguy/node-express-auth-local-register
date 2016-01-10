@@ -1,4 +1,4 @@
-# node-express-auth-local
+# node-express-registration-local
 A basic and lean recipe for implementing user registration in a node express server.
 
 Includes a setup script which will create the 'local/users' table.
