@@ -2,13 +2,7 @@
 
 /**
  * Run this script once before running the application, to create the users
- * collection and to insert a single default user. The script should only be run
- * once.
- *
- * The default user will have the following credentials:
- *
- * Username: admin
- * Password: admin
+ * collection.
  */
 var mongoose = require('mongoose');
 var dbConfig = require('../configs/db');
@@ -31,11 +25,10 @@ var userParticulars = {
 // Add the default user to the database.
 Users.register(new Users(userParticulars), userPassword, function(err, user) {
   if (err) {
-    console.log('Unable to add default user: ' + err);
+    console.log('Unable to create users collection: ' + err);
   }
   else {
-    console.log('Default user successfully added.');
+    console.log('Users collection successfully created.');
   }
-  
   process.exit(0);
 });

@@ -7,6 +7,7 @@
   "homepage": "https://github.com/benjaminvickers/node-express-registration#readme",
   "main": "app.js",
   "scripts": {
+    "setup": "node ./scripts/setup.js",
     "start": "NODE_ENV=dev node ./bin/www"
   },
   "dependencies": {

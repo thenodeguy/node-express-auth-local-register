@@ -13,7 +13,7 @@ npm install
 
 To setup
 -
-node bin/setup.js
+node run-script setup
 
 To run
 -
