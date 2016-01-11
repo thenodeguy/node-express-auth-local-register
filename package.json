@@ -1,10 +1,10 @@
 {
-  "name": "node-express-registration",
+  "name": "node-express-auth-local-register",
   "description": "A basic and lean recipe for implementing user registration in a node express server.",
   "version": "1.0.0",
   "author": "benjaminvickers",
   "license": "ISC",
-  "homepage": "https://github.com/benjaminvickers/node-express-registration#readme",
+  "homepage": "https://github.com/benjaminvickers/node-express-auth-local-register#readme",
   "main": "app.js",
   "scripts": {
     "setup": "node ./scripts/setup.js",
@@ -24,9 +24,9 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benjaminvickers/node-express-registration.git"
+    "url": "git+https://github.com/benjaminvickers/node-express-auth-local-register.git"
   },
   "bugs": {
-    "url": "https://github.com/benjaminvickers/node-express-registration/issues"
+    "url": "https://github.com/benjaminvickers/node-express-auth-local-register/issues"
   }
 }
