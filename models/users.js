@@ -9,8 +9,9 @@ var Users = new mongoose.Schema(
   // username added automatically,
   // salt and hash are added automatically,
   // hash are added automatically,
-  firstName:String,
-  lastName:String,
+  firstname: String,
+  lastname: String,
+  verifytoken: String
 },
 {
   collection:"users"

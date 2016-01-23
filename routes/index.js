@@ -3,6 +3,12 @@
 var passport = require('passport');
 var router = require('express').Router();
 var Users = require('../models/users');
+var EmailTemplate = require('email-templates').EmailTemplate;
+var nodemailer = require('nodemailer');
+var crypto = require('crypto');
+var path = require('path');
+var globalConfig = require('../configs/global');
+var mailConfig = require('../configs/mail');
 
 
 // Set the 'isLoggedIn' variable is used on the web templates.
@@ -11,41 +17,132 @@ router.use(function(req, res, next) {
   next();
 });
 
+
 router.get('/', function(req, res, next) {
   res.render('index');
 });
+
 
 router.get('/register', suppressLoggedInUsers, function(req, res, next) {
   res.render('register', { message: req.flash('error') });
 });
 
+
 router.post('/register', suppressLoggedInUsers, function(req, res, next) {
+
+  var promise = new Promise(function(resolve, reject) {  
+    
+    // Register the user
+    var userDetails = {
+      username: req.body.username,
+      firstname: req.body.firstName,
+      lastname: req.body.lastName
+    };
+
+    Users.register(new Users(userDetails), req.body.password, function(err, user) {
+      if(err) {
+        err.message = 'Unable to register user';
+        err.status = 500;
+        reject(err);
+        return;
+      }
+      resolve(user);
+    });
+  })
+  .then(function(user) {
+    
+    // Generate token for email verification.
+    return new Promise(function(resolve, reject) {
+      crypto.randomBytes(48, function(ex, buf) {
+        user.verifytoken = buf.toString('hex');
+        user.save(function(err) {
+          if(err) {
+            err.message = 'Unable to configure email verification';
+            err.status = 500;
+            reject(err);
+            return;
+          }
+          resolve(user);
+        });
+      });
+    });
+  })
+  .then(function(user) {
   
-  // Register the user
-  var userParticulars = {
-    username: req.body.username,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName
-  };
+    // Prepare the user verification email.
+    return new Promise(function(resolve, reject) {
 
-  Users.register(new Users(userParticulars), req.body.password, function(err, user) {
+      var templateDir = path.join(__dirname, '..', 'templates', 'confirm-registration');
+      var confirmEmail = new EmailTemplate(templateDir);
+      var confirmUrl = globalConfig[process.env.NODE_ENV].url + '/register/' + user.verifytoken;
+      var data = {
+        firstName: user.firstname,
+        confirmUrl: confirmUrl
+      };
+      
+      confirmEmail.render(data, function (err, results) {
+        if(err) {
+          err.message = 'Unable to render confirmation email';
+          err.status = 500;
+          reject(err);
+          return;
+        }
+      
+        var mail = {
+          port: mailConfig[process.env.NODE_ENV].port,
+          from: mailConfig[process.env.NODE_ENV].from_newregistration,
+          to: user.username,
+          subject: 'Please confirm your App registration',
+          html: results.html
+        };
+        
+        // Do not send email to real email address if in dev mode.
+        if(process.env.NODE_ENV == 'dev') {
+          mail['to'] = mailConfig[process.env.NODE_ENV].testmail;
+        }
+        
+        resolve(mail);
+      });
+    });   
+  })
+  .then(function(mail) {
+  
+    // Send the user verification email.
+    return new Promise(function(resolve, reject) {
 
-    if(err) {
-      req.flash('error', 'Unable to register user: ' + err);
-      res.redirect('/register');
-      return;
-    }
-
+      var transporter = nodemailer.createTransport();
+      transporter.sendMail(mail, function(err, info){
+        if(err) {
+          err.message = 'Unable to send mail';
+          err.status = 500;
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    });
+  })
+  .then(function() {
+  
     // Log the new user in.
     passport.authenticate('local')(req, res, function() {
-        res.redirect('/dashboard');
+      res.redirect('/dashboard');
     });
+  })
+  .catch(function(err) {
+  
+    req.flash('error', err.message);
+    res.redirect('/register');
+    return;
   });
+  
 });
+
 
 router.get('/dashboard', forceLogIn, function(req, res, next) {
   res.render('dashboard');
 });
+
 
 router.get('/logout', function(req, res, next) {
   req.logout();
