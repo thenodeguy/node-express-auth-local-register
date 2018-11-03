@@ -1,4 +1,7 @@
 # node-express-auth-local-register
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/bjvickers/node-express-auth-local-register.svg)](https://greenkeeper.io/)
+
 A basic and lean recipe for implementing user registration in a node express server.
 
 Requirements
